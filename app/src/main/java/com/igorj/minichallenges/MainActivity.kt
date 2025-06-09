@@ -4,44 +4,57 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.igorj.minichallenges.ui.composable.DawnDuskScreen
+import com.igorj.minichallenges.ui.theme.LocalThemeConfig
 import com.igorj.minichallenges.ui.theme.MiniChallengesTheme
 
 class MainActivity : ComponentActivity() {
+
+    private var currentRating by mutableIntStateOf(0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        if (savedInstanceState != null) {
+            currentRating = savedInstanceState.getInt("currentRating")
+        }
+
         setContent {
             MiniChallengesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                val themeConfig = LocalThemeConfig.current
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(themeConfig.backgroundGradient)
+                    )
+                    DawnDuskScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        currentRating = currentRating,
+                        onRatingChanged = { newRating ->
+                            currentRating = newRating
+                        }
                     )
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MiniChallengesTheme {
-        Greeting("Android")
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("currentRating", currentRating)
     }
 }

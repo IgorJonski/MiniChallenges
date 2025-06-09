@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MiniChallenges</string>
+    <string name="ratingSection_ui_howWasYourDayLabel">How was your day?</string>
+    <string name="timeOfDayIcon_alt_sunIcon">Sun</string>
+    <string name="timeOfDayIcon_alt_moonIcon">Moon</string>
+    <string name="ratingBar_alt_starIcon">Star</string>
 </resources>

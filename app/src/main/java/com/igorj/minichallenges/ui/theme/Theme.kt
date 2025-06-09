@@ -9,7 +9,10 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+import com.igorj.minichallenges.ui.model.ThemeConfig
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -33,6 +36,8 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+val LocalThemeConfig = compositionLocalOf<ThemeConfig> { ThemeConfig.LightMode }
+
 @Composable
 fun MiniChallengesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -50,9 +55,13 @@ fun MiniChallengesTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    val themeConfig = if (darkTheme) ThemeConfig.DarkMode else ThemeConfig.LightMode
+
+    CompositionLocalProvider(LocalThemeConfig provides themeConfig) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
