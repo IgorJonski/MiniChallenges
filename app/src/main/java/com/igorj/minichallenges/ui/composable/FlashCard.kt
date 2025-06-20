@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +43,8 @@ fun FlashCard(
         ),
     )
 
+    var cardHeight by remember { mutableStateOf(CARD_MIN_HEIGHT) }
+
     Card(
         modifier = modifier
             .noRippleClickable {
@@ -58,15 +62,33 @@ fun FlashCard(
         border = null,
     ) {
         if (rotation <= 90f) {
-            FlashCardFrontSide(
-                cutOffCornersSize = cutOffCornersSize,
-                frontCardData = frontCardData,
-            )
+            Box {
+                FlashCardBackSide(
+                    modifier = Modifier
+                        /*
+                        Invisible back side only to make front side
+                         */
+                        .alpha(0f),
+                    cutOffCornersSize = cutOffCornersSize,
+                    backCardData = backCardData,
+                    onHeightCalculated = {
+                        if (cardHeight < it) {
+                            cardHeight = it
+                        }
+                    }
+                )
+                FlashCardFrontSide(
+                    modifier = Modifier.heightIn(min = cardHeight),
+                    cutOffCornersSize = cutOffCornersSize,
+                    frontCardData = frontCardData,
+                )
+            }
         } else {
             Box(modifier = Modifier.graphicsLayer { rotationY = 180f }) {
                 FlashCardBackSide(
+                    modifier = Modifier.heightIn(min = cardHeight),
                     cutOffCornersSize = cutOffCornersSize,
-                    backCardData = backCardData,
+                    backCardData = backCardData
                 )
             }
         }
@@ -77,7 +99,7 @@ enum class FlashCardFace {
     Front, Back
 }
 
-const val FLASH_CARD_RATIO = 310f / 380f
+private val CARD_MIN_HEIGHT = 380.dp
 
 @Preview
 @Composable

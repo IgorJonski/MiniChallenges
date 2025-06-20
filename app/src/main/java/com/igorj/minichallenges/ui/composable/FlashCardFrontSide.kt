@@ -5,13 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -49,26 +46,24 @@ fun FlashCardFrontSide(
     }
 
     Card(
-        modifier = modifier.aspectRatio(FLASH_CARD_RATIO),
         shape = frontShape,
         colors = CardDefaults.cardColors(containerColor = FrontSideColor)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
+            modifier = modifier.padding(8.dp)
         ) {
             Image(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
                 painter = painterResource(R.drawable.ic_border),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
             )
             Image(
                 modifier = Modifier
-                    .fillMaxHeight()
                     .padding(top = 32.dp)
-                    .align(Alignment.BottomEnd),
+                    .align(Alignment.CenterEnd),
                 painter = painterResource(R.drawable.ic_rocket),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight
@@ -113,7 +108,6 @@ fun FlashCardFrontSide(
 @Composable
 fun FlashCardFrontSidePreview() {
     FlashCardFrontSide(
-        modifier = Modifier.width(310.dp),
         frontCardData = FrontCardData(
             craftName = "ISS Spacecraft",
             numberOfCrew = 12

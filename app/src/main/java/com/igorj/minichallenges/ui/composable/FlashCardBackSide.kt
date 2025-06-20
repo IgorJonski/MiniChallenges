@@ -4,12 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -20,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,24 +39,30 @@ fun FlashCardBackSide(
     modifier: Modifier = Modifier,
     cutOffCornersSize: Dp = 32.dp,
     backCardData: BackCardData,
+    onHeightCalculated: (Dp) -> Unit = { _ -> }
 ) {
     val backShape = remember(cutOffCornersSize) {
         CutOffCornersShape(cutOffCornersSize, CutOffCornersShapeType.TopLeftAndBottomRightCutOff)
     }
 
+    val density = LocalDensity.current
+
     Card(
-        modifier = modifier.aspectRatio(FLASH_CARD_RATIO),
+        modifier = modifier
+            .onGloballyPositioned {
+                val height = with(density) { it.size.height.toDp() }
+                onHeightCalculated(height)
+            },
         shape = backShape,
         colors = CardDefaults.cardColors(containerColor = BackSideColor)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
+            modifier = Modifier.padding(8.dp)
         ) {
             Image(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
                     .graphicsLayer {
                         rotationX = 180f
                     },
@@ -68,9 +73,8 @@ fun FlashCardBackSide(
 
             Image(
                 modifier = Modifier
-                    .fillMaxHeight()
                     .padding(top = 32.dp)
-                    .align(Alignment.BottomStart)
+                    .align(Alignment.CenterStart)
                     .graphicsLayer {
                         rotationY = 180f
                     },
@@ -89,7 +93,9 @@ fun FlashCardBackSide(
             )
 
             Column(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.Center),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
@@ -118,7 +124,6 @@ fun FlashCardBackSidePreview() {
     )
 
     FlashCardBackSide(
-        modifier = Modifier.width(310.dp),
         backCardData = BackCardData(crewMembers = crew),
     )
 }

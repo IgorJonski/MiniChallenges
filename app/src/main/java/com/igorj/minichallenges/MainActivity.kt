@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,7 +60,12 @@ class MainActivity : ComponentActivity() {
                     ) {
                         when (val state = uiState.value) {
                             is FlashCardState.Loading -> {
-                                CircularProgressIndicator()
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(48.dp),
+                                    color = Color.White,
+                                    strokeWidth = 4.dp,
+                                    strokeCap = StrokeCap.Square
+                                )
                             }
                             is FlashCardState.Error -> {
                                 Text(
